@@ -14,7 +14,15 @@ import { CharacterProgressionData } from '@csegames/camelot-unchained/lib/graphq
 import { GraphQLResult } from '@csegames/camelot-unchained/lib/graphql/react';
 import { toSentenceCase } from '@csegames/camelot-unchained/lib/utils/textUtils';
 import RewardsView from './RewardsView';
-import { LoadingContainer, InnerContainer, ProgressionTitle, ProgressionCorner, ProgressionContent, ProgressionLoading, ProgressionFooter } from './style';
+import {
+  LoadingContainer,
+  InnerContainer,
+  ProgressionTitle,
+  ProgressionCorner,
+  ProgressionContent,
+  ProgressionLoading,
+  ProgressionFooter,
+} from './style';
 
 const Container = styled('div')`
   position: relative;
@@ -189,7 +197,7 @@ class ProgressionView extends React.Component<Props, State> {
     return (
       <Container>
         <ProgressionTitle><h6>Progression</h6></ProgressionTitle>
-        <InnerContainer className="cse-ui-scroller-thumbonly">
+        <InnerContainer className='cse-ui-scroller-thumbonly'>
           <CloseButton onClick={this.props.onCloseClick} />
           <ProgressionCorner />
           <ProgressionContent>
@@ -197,39 +205,55 @@ class ProgressionView extends React.Component<Props, State> {
           {graphql.data.myprogression.unCollectedDayLogs.map((uncollectedDay) => {
             const { secondsActive, distanceMoved, skillPartsUsed, damage, plots, crafting, scenarios } = uncollectedDay;
 
-            let damageDetails: JSX.Element[] = [];
+            const damageDetails: JSX.Element[] = [];
             Object.keys(damage).map((damageKey) => {
               Object.keys(damage[damageKey]).map((damageType) => {
                 if (damage[damageKey][damageType] > 0) {
                   damageDetails.push(
                     <li>
-                      <div className="ProgressionLabel">
+                      <div className='ProgressionLabel'>
                         {toSentenceCase(damageKey)} ({
                           damageType === 'playerCharacter' ? 'Player' :
                           damageType === 'nonPlayerCharacter' ? 'NPC' :
                           toSentenceCase(damageType)
                         }):
                       </div>
-                      <div className="ProgressionValue">{damage[damageKey][damageType]}</div>
+                      <div className='ProgressionValue'>{damage[damageKey][damageType]}</div>
                     </li>
-                  );
+                  ,);
                 }
               });
             });
 
-            let plotDetails: JSX.Element[] = [];
+            const plotDetails: JSX.Element[] = [];
             Object.keys(plots).map((plotKey) => {
-              if (plots[plotKey] > 0) plotDetails.push(<li><div className="ProgressionLabel">{toSentenceCase(plotKey)}: </div><div className="ProgressionValue">{plots[plotKey]}</div></li>);
+              if (plots[plotKey] > 0) {
+                plotDetails.push(
+                  <li>
+                    <div className='ProgressionLabel'>{toSentenceCase(plotKey)}: </div>
+                    <div className='ProgressionValue'>{plots[plotKey]}</div>
+                  </li>
+                ,);
+              }
             });
 
-            let craftingDetails: JSX.Element[] = [];
+            const craftingDetails: JSX.Element[] = [];
             Object.keys(crafting).map((craftingKey) => {
               Object.keys(crafting[craftingKey]).map((craftingType) => {
-                if (crafting[craftingKey][craftingType] > 0) craftingDetails.push(<li><div className="ProgressionLabel">{toSentenceCase(craftingKey)} ({toSentenceCase(craftingType)}): </div><div className="ProgressionValue">{crafting[craftingKey][craftingType]}</div></li>);
+                if (crafting[craftingKey][craftingType] > 0) {
+                  craftingDetails.push(
+                    <li>
+                      <div className='ProgressionLabel'>
+                        {toSentenceCase(craftingKey)} ({toSentenceCase(craftingType)}):
+                      </div>
+                      <div className='ProgressionValue'>{crafting[craftingKey][craftingType]}</div>
+                    </li>
+                  ,);
+                }
               });
             });
 
-            let scenarioDetails: JSX.Element[] = [];
+            const scenarioDetails: JSX.Element[] = [];
             let scenariosWon: number = 0;
             let scenariosLost: number = 0;
             let scenariosTied: number = 0;
@@ -238,65 +262,94 @@ class ProgressionView extends React.Component<Props, State> {
               if (scenario.outcome === 'Lose') scenariosLost++;
               if (scenario.outcome === 'Draw') scenariosTied++;
             });
-            if (scenariosWon > 0) scenarioDetails.push(<li><div className="ProgressionLabel">Scenarios Won: </div><div className="ProgressionValue">{scenariosWon}</div></li>);
-            if (scenariosLost > 0) scenarioDetails.push(<li><div className="ProgressionLabel">Scenarios Lost: </div><div className="ProgressionValue">{scenariosLost}</div></li>);
-            if (scenariosTied > 0) scenarioDetails.push(<li><div className="ProgressionLabel">Scenarios Tied: </div><div className="ProgressionValue">{scenariosTied}</div></li>);
+            if (scenariosWon > 0) {
+              scenarioDetails.push(
+                <li>
+                  <div className='ProgressionLabel'>Scenarios Won: </div>
+                  <div className='ProgressionValue'>{scenariosWon}</div>
+                </li>
+              ,);
+            }
+            if (scenariosLost > 0) {
+              scenarioDetails.push(
+                <li>
+                  <div className='ProgressionLabel'>Scenarios Lost: </div>
+                  <div className='ProgressionValue'>{scenariosLost}</div>
+                </li>
+              ,);
+            }
+            if (scenariosTied > 0) {
+              scenarioDetails.push(
+                <li>
+                  <div className='ProgressionLabel'>Scenarios Tied: </div>
+                  <div className='ProgressionValue'>{scenariosTied}</div>
+                </li>
+              ,);
+            }
 
-            let skillDetails: JSX.Element[] = [];
+            const skillDetails: JSX.Element[] = [];
             skillPartsUsed.map((skillPartUsed) => {
               skillDetails.push(
                 <li>
-                  <div className="ProgressionLabel">Skill Used ({ skillPartUsed.skillPartID }):</div>
-                  <div className="ProgressionValue">{ skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }</div>
+                  <div className='ProgressionLabel'>Skill Used ({ skillPartUsed.skillPartID }):</div>
+                  <div className='ProgressionValue'>
+                    { skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }
+                  </div>
                 </li>
-              );
+              ,);
             });
 
             return (
               <div id={uncollectedDay.id}>
                 <h2>{moment(uncollectedDay.dayStart).format('dddd, MMMM Do YYYY, h:mm:ss A')}</h2>
                 <ProgressionBorder />
-                <div className="ProgressList">
+                <div className='ProgressList'>
                   <ul>
                     <h3>General Details</h3>
                     { secondsActive ? (
-                      <li><div className="ProgressionLabel">Time Active: </div><div className="ProgressionValue">{moment.duration(secondsActive, 'seconds').humanize()}</div></li>
-                    ): null }
+                      <li>
+                        <div className='ProgressionLabel'>Time Active: </div>
+                        <div className='ProgressionValue'>{moment.duration(secondsActive, 'seconds').humanize()}</div>
+                      </li>
+                    ) : null }
                     { distanceMoved ? (
-                      <li><div className="ProgressionLabel">Distance Traveled: </div><div className="ProgressionValue">{distanceMoved} meters</div></li>
-                    ): null }
+                      <li>
+                        <div className='ProgressionLabel'>Distance Traveled: </div>
+                        <div className='ProgressionValue'>{distanceMoved} meters</div>
+                      </li>
+                    ) : null }
                   </ul>
                   { damageDetails.length > 0 ? (
                     <ul>
                       <h3>Damage Details</h3>
                       {damageDetails}
                     </ul>
-                  ): null }
+                  ) : null }
                   { plotDetails.length > 0 ? (
                     <ul>
                       <h3>Plot Details</h3>
                       {plotDetails}
                     </ul>
-                  ): null }
+                  ) : null }
                   { craftingDetails.length > 0 ? (
                     <ul>
                       <h3>Crafting Details</h3>
                       {craftingDetails}
                     </ul>
-                  ): null }
+                  ) : null }
                   { scenarioDetails.length > 0 ? (
                     <ul>
                       <h3>Scenario Details</h3>
                       {scenarioDetails}
                     </ul>
-                  ): null }
+                  ) : null }
                   { skillDetails.length > 0 ? (
                     <ul>
                       <h3>Skill Details</h3>
                       {skillDetails}
                     </ul>
-                  ): null }
-                  <h3 className="RewardHeadline">Rewards</h3>
+                  ) : null }
+                  <h3 className='RewardHeadline'>Rewards</h3>
                   <RewardsView key={uncollectedDay.id} logID={uncollectedDay.id} />
                 </div>
               </div>
@@ -309,7 +362,7 @@ class ProgressionView extends React.Component<Props, State> {
             <ProgressionFooterOuter>
                 <ProgressionFooterLeft />
                 <CollectButton
-                  className="btn"
+                  className='btn'
                   onClick={this.props.onCollectClick}>
                   Collect All
                 </CollectButton>
