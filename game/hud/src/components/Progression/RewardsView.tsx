@@ -20,23 +20,7 @@ import {
 } from './style';
 
 const progressionAdjustmentFragments = `
-  fragment SkillPartLevelReason on CharacterAdjustmentReasonSkillPartLevel {
-    skillPartID
-    skillPartLevel
-  }
-
-  fragment UseSkillPartReason on CharacterAdjustmentReasonUseSkillPart {
-    skillID
-    inCombatCount
-    nonCombatCount
-  }
-
-  fragment UseSkillsReason on CharacterAdjustmentReasonUseSkills {
-    inCombatCount
-    nonCombatCount
-  }
-
-  fragment AdjustmentItemDefinition on ItemDefRef {
+  fragment ItemDefinition on ItemDefRef {
     id
     numericItemDefID
     defaultResourceID
@@ -47,13 +31,41 @@ const progressionAdjustmentFragments = `
     itemType
   }
 
+  fragment SkillPartDefinition on SkillPartDef {
+    icon
+    id
+    name
+  }
+
+  fragment SkillPartLevelReason on CharacterAdjustmentReasonSkillPartLevel {
+    skillPartID
+    skillPartLevel
+    skillPartDef {
+      ...SkillPartDefinition
+    }
+  }
+
+  fragment UseSkillPartReason on CharacterAdjustmentReasonUseSkillPart {
+    skillID
+    inCombatCount
+    nonCombatCount
+    skillPartDef {
+      ...SkillPartDefinition
+    }
+  }
+
+  fragment UseSkillsReason on CharacterAdjustmentReasonUseSkills {
+    inCombatCount
+    nonCombatCount
+  }
+
   fragment AddItemAdjustment on CharacterAdjustmentAddItem {
     itemInstanceIDS
     staticDefinitionID
     unitCount
     quality
     itemDef {
-      ...AdjustmentItemDefinition
+      ...ItemDefinition
     }
   }
 
@@ -71,6 +83,9 @@ const progressionAdjustmentFragments = `
     previousProgressionPoints
     newLevel
     newProgressPoints
+    skillPartDef {
+      ...SkillPartDefinition
+    }
   }
 
   fragment SkillNodeAdjustment on CharacterAdjustmentApplySkillNode {
@@ -179,36 +194,47 @@ class RewardsView extends React.Component<Props, State> {
   private showRewards(progressionData: CharacterProgressionData) {
     const adjustmentsElement: JSX.Element[] = [];
     if (!progressionData.adjustmentsByDayLogID || progressionData.adjustmentsByDayLogID.length === 0) {
-      adjustmentsElement.push(<div className='NoReward'>No new rewards.</div>);
+      adjustmentsElement.push(<li key='noreward'><div className='NoReward'>No new rewards.</div></li>);
     } else {
+      let keyCounter = 0;
       progressionData.adjustmentsByDayLogID.map((adjustment: CharacterAdjustmentDBModel, adjustmentID: number) => {
         const { addItem, playerStat, skillNode, skillPart } = adjustment.adjustment;
         const { skillPartLevel, useSkillPart, useSkills, adminGrant } = adjustment.reason;
-        console.log('adjustment', adjustment);
-        let reasonDescription = '';
+        let reasonDescription: JSX.Element = null;
         if (skillPartLevel) {
           // Reason is skill level up
-          reasonDescription = `Skill Leveled Up: ${skillPartLevel.skillPartID}`;
+          reasonDescription =
+            <div>
+              Obtained Level {skillPartLevel.skillPartLevel}
+              &nbsp;<img height='20px' width='20px' src={skillPartLevel.skillPartDef.icon} />
+              &nbsp;{skillPartLevel.skillPartDef.name}
+            </div>;
         } else if (useSkillPart) {
           // Reason is individual skill usage
-          reasonDescription = `Used ${useSkillPart.skillID}: ${useSkillPart.inCombatCount + useSkillPart.nonCombatCount}`;
+          reasonDescription =
+            <div>Used <img height='20px' width='20px' src={useSkillPart.skillPartDef.icon} />
+              &nbsp;{useSkillPart.skillPartDef.name}: {useSkillPart.inCombatCount + useSkillPart.nonCombatCount}
+            </div>;
         } else if (useSkills) {
           // Reason is any skill usage
-          reasonDescription = `Any Skill Used: ${useSkills.inCombatCount + useSkills.nonCombatCount}`;
+          reasonDescription =
+            <div>
+              Any Skill Used: {useSkills.inCombatCount + useSkills.nonCombatCount}
+            </div>;
         } else if (adminGrant) {
           // Given by administrator
-          reasonDescription = `Granted by administrator.`;
+          reasonDescription = <div>Granted by Administrator</div>;
         }
 
         const adjustmentDescription: JSX.Element[] = [];
         if (addItem) {
           // Adjustment is a new item
-          // **TODO: style the item icon
           adjustmentDescription.push(
-            <li>
+            <li key={++keyCounter}>
               <div className='ProgressionLabel'>Item{addItem.unitCount > 1 ? 's' : null} Received:</div>
               <div className='ProgressionValue'>
-                <img src={addItem.itemDef.iconUrl} />{addItem.unitCount}x {addItem.staticDefinitionID}
+                <img height='20px' width='20px' src={addItem.itemDef.iconUrl} />
+                &nbsp;{addItem.unitCount}x {addItem.staticDefinitionID}
               </div>
               <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
             </li>
@@ -217,7 +243,7 @@ class RewardsView extends React.Component<Props, State> {
           // Adjustment is stat progression
           if (playerStat.newBonus !== playerStat.previousBonus) {
             adjustmentDescription.push(
-              <li>
+              <li key={++keyCounter}>
                 <div className='ProgressionLabel'>Attribute Bonus Applied:</div>
                 <div className='ProgressionValue'>
                   +{playerStat.newBonus - playerStat.previousBonus} to {playerStat.playerStat}
@@ -228,7 +254,7 @@ class RewardsView extends React.Component<Props, State> {
           }
           if (playerStat.newProgressionPoints - playerStat.previousProgressionPoints > 0) {
             adjustmentDescription.push(
-              <li>
+              <li key={++keyCounter}>
                 <div className='ProgressionLabel'>Attribute Progression Increase:</div>
                 <div className='ProgressionValue'>
                 {playerStat.newProgressionPoints - playerStat.previousProgressionPoints} points for {playerStat.playerStat}
@@ -240,7 +266,7 @@ class RewardsView extends React.Component<Props, State> {
         } else if (skillNode) {
           // Adjustment is a skill node
           adjustmentDescription.push(
-            <li>
+            <li key={++keyCounter}>
               <div className='ProgressionLabel'>Skill Node Applied:</div>
               <div className='ProgressionValue'>{skillNode.skillNodePath}</div>
               <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
@@ -248,22 +274,25 @@ class RewardsView extends React.Component<Props, State> {
           ,);
         } else if (skillPart) {
           // Adjustment is skill progression
-          // **TODO add skillpart icons when GQL updated
           if (skillPart.newLevel !== skillPart.previousLevel) {
             adjustmentDescription.push(
-              <li>
+              <li key={++keyCounter}>
                 <div className='ProgressionLabel'>New Skill Level Obtained:</div>
-                <div className='ProgressionValue'>Level {skillPart.newLevel} {skillPart.skillPartID}</div>
+                <div className='ProgressionValue'>
+                  Level {skillPart.newLevel}
+                  &nbsp;<img height='20px' width='20px' src={skillPart.skillPartDef.icon} /> {skillPart.skillPartDef.name}
+                </div>
                 <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
               </li>
             ,);
           }
           if (skillPart.newProgressPoints - skillPart.previousProgressionPoints > 0) {
             adjustmentDescription.push(
-              <li>
+              <li key={++keyCounter}>
                 <div className='ProgressionLabel'>Skill Progression Increase:</div>
                 <div className='ProgressionValue'>
-                  {skillPart.newProgressPoints - skillPart.previousProgressionPoints} points for {skillPart.skillPartID}
+                  {skillPart.newProgressPoints - skillPart.previousProgressionPoints} points for
+                  &nbsp;<img height='20px' width='20px' src={skillPart.skillPartDef.icon} /> {skillPart.skillPartDef.name}
                 </div>
                 <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
               </li>

@@ -210,7 +210,7 @@ class ProgressionView extends React.Component<Props, State> {
               Object.keys(damage[damageKey]).map((damageType) => {
                 if (damage[damageKey][damageType] > 0) {
                   damageDetails.push(
-                    <li>
+                    <li key={damageKey + damageType}>
                       <div className='ProgressionLabel'>
                         {toSentenceCase(damageKey)} ({
                           damageType === 'playerCharacter' ? 'Player' :
@@ -229,7 +229,7 @@ class ProgressionView extends React.Component<Props, State> {
             Object.keys(plots).map((plotKey) => {
               if (plots[plotKey] > 0) {
                 plotDetails.push(
-                  <li>
+                  <li key={plotKey}>
                     <div className='ProgressionLabel'>{toSentenceCase(plotKey)}: </div>
                     <div className='ProgressionValue'>{plots[plotKey]}</div>
                   </li>
@@ -242,7 +242,7 @@ class ProgressionView extends React.Component<Props, State> {
               Object.keys(crafting[craftingKey]).map((craftingType) => {
                 if (crafting[craftingKey][craftingType] > 0) {
                   craftingDetails.push(
-                    <li>
+                    <li key={craftingKey + craftingType}>
                       <div className='ProgressionLabel'>
                         {toSentenceCase(craftingKey)} ({toSentenceCase(craftingType)}):
                       </div>
@@ -264,7 +264,7 @@ class ProgressionView extends React.Component<Props, State> {
             });
             if (scenariosWon > 0) {
               scenarioDetails.push(
-                <li>
+                <li key='scenarioswon'>
                   <div className='ProgressionLabel'>Scenarios Won: </div>
                   <div className='ProgressionValue'>{scenariosWon}</div>
                 </li>
@@ -272,7 +272,7 @@ class ProgressionView extends React.Component<Props, State> {
             }
             if (scenariosLost > 0) {
               scenarioDetails.push(
-                <li>
+                <li key='scenarioslost'>
                   <div className='ProgressionLabel'>Scenarios Lost: </div>
                   <div className='ProgressionValue'>{scenariosLost}</div>
                 </li>
@@ -280,7 +280,7 @@ class ProgressionView extends React.Component<Props, State> {
             }
             if (scenariosTied > 0) {
               scenarioDetails.push(
-                <li>
+                <li key='scenariostied'>
                   <div className='ProgressionLabel'>Scenarios Tied: </div>
                   <div className='ProgressionValue'>{scenariosTied}</div>
                 </li>
@@ -290,8 +290,11 @@ class ProgressionView extends React.Component<Props, State> {
             const skillDetails: JSX.Element[] = [];
             skillPartsUsed.map((skillPartUsed) => {
               skillDetails.push(
-                <li>
-                  <div className='ProgressionLabel'>Skill Used ({ skillPartUsed.skillPartID }):</div>
+                <li key={skillPartUsed.skillPartID}>
+                  <div className='ProgressionLabel'>
+                    Skill Used (<img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} />
+                    &nbsp;{skillPartUsed.skillPartDef.name}):
+                  </div>
                   <div className='ProgressionValue'>
                     { skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }
                   </div>
@@ -300,7 +303,7 @@ class ProgressionView extends React.Component<Props, State> {
             });
 
             return (
-              <div id={uncollectedDay.id}>
+              <div key={uncollectedDay.id} id={uncollectedDay.id}>
                 <h2>{moment(uncollectedDay.dayStart).format('dddd, MMMM Do YYYY, h:mm:ss A')}</h2>
                 <ProgressionBorder />
                 <div className='ProgressList'>
