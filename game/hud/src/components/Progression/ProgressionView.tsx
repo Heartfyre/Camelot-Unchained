@@ -53,6 +53,15 @@ const CollectButton = styled('div')`
     &:hover {
       background: url(images/progression/button-on.png) no-repeat;
       color: #fff;
+      &::before {
+        content: '';
+        position: absolute;
+        background-image: url(images/progression/button-glow.png);
+        width: 93px;
+        height: 30px;
+        left: 456px;
+        background-size: cover;
+    }
     }
   }
 `;
@@ -62,7 +71,7 @@ const ProgressionFooterBorder = styled('div')`
   border: 1px solid #2e2b28;
   margin: 7px 10px 0;
   display: block;
-  width: 780px;
+  width: 980px;
   height: 40px;
   z-index: 3;
 `;

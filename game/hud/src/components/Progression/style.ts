@@ -183,4 +183,5 @@ export const ProgressionFooter = styled('div')`
   background: rgba(55, 52, 51, 0.3);
   border-top: 1px solid #3b3634;
   z-index: 11;
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.8);
 `;
