@@ -220,7 +220,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
                   <MOTDFooterOuter>
                       <MOTDFooterLeft />
                       <MOTDButton
-                        className="btn"
+                        className='btn'
                         onClick={this.hideDelay}>
                         Dismiss for 24h
                       </MOTDButton>
