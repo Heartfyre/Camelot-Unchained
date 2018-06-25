@@ -293,7 +293,8 @@ class RewardsView extends React.Component<Props, State> {
                 <div className='ProgressionLabel'>Skill Progression Increase:</div>
                 <div className='ProgressionValue'>
                   <img height='20px' width='20px' src={skillPart.skillPartDef.icon} />
-                  {skillPart.newProgressPoints - skillPart.previousProgressionPoints} points for {skillPart.skillPartDef.name}
+                  {skillPart.newProgressPoints - skillPart.previousProgressionPoints} points for
+                  &nbsp;{skillPart.skillPartDef.name}
                 </div>
                 <div className='RewardLabel'>Reason:</div><div className='RewardValue'>{reasonDescription}</div>
               </li>

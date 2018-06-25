@@ -292,7 +292,8 @@ class ProgressionView extends React.Component<Props, State> {
               skillDetails.push(
                 <li key={skillPartUsed.skillPartID}>
                   <div className='ProgressionLabel'>
-                  <img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} /> Skill Used ({skillPartUsed.skillPartDef.name}):
+                    <img height='20px' width='20px' src={skillPartUsed.skillPartDef.icon} />
+                    &nbsp;Skill Used ({skillPartUsed.skillPartDef.name}):
                   </div>
                   <div className='ProgressionValue'>
                     { skillPartUsed.usedInCombatCount + skillPartUsed.usedNonCombatCount }
