@@ -179,7 +179,7 @@ export interface WelcomeData {
   duration: number;
 }
 
-class Welcome extends React.Component<WelcomeProps, WelcomeState> {
+class MOTD extends React.Component<WelcomeProps, WelcomeState> {
   public name: string = 'Welcome';
   private defaultMessage: JSX.Element[] = [<div key='0'>Loading...</div>];
 
@@ -211,7 +211,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
                 <MOTDContent>
                       {
                         gqlData && gqlData.motd && gqlData.motd[0]
-                        ? <div key='100' dangerouslySetInnerHTML={{ __html: gqlData.motd[0].htmlContent }} />
+                        ? <div dangerouslySetInnerHTML={{ __html: gqlData.motd[0].htmlContent }} />
                         : this.defaultMessage
                       }
                 </MOTDContent>
@@ -241,8 +241,8 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
   private hideDelay = (): void => {
     this.hide();
     const hideDelayStart: Date = new Date();
-    localStorage.setItem('cse-welcome-hide-start', JSON.stringify(hideDelayStart));
+    localStorage.setItem('cse-MOTD-hide-start', JSON.stringify(hideDelayStart));
   }
 }
 
-export default Welcome;
+export default MOTD;
