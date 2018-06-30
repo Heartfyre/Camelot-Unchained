@@ -6,7 +6,58 @@
 
 import * as React from 'react';
 import { client, Faction, hasClientAPI, PlayerState } from '@csegames/camelot-unchained';
+import styled from 'react-emotion';
 import RespawnLocation from './RespawnLocation';
+
+
+const Container = styled('div')`
+  border-image-slice: 1;
+  background: url(images/ui/interactive-alert/alert-bg.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: fixed;
+  top: -2px;
+  width: 700px;
+  height: 140px;
+  left: 50%;
+  margin-left: -350px;
+  -webkit-transition: height 1s;
+  transition: height 1s;
+  &:before {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    content: '';
+    position: absolute;
+    left: 50px;
+    right: 50px;
+    top: 0;
+    height: 10px;
+    background-image: url(images/ui/interactive-alert/divider-top.png);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+  &:after {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    content: '';
+    position: absolute;
+    left: 50px;
+    right: 50px;
+    bottom: -2px;
+    height: 10px;
+    background-image: url(images/ui/interactive-alert/divider-bottom.png);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+`;
+
 
 export interface RespawnProps {
   setVisibility: (vis: boolean) => void;
@@ -37,13 +88,13 @@ class Respawn extends React.Component<RespawnProps, RespawnState> {
       });
     }
     return (
-      <div className='frame cu-window cu-window-transparent cu-window-auto-size'>
+      <Container>
         <div className='cu-window-header'><div className='title'>Respawn</div></div>
         <div className='cu-window-content'>
           {this.renderButton(this.home, 'Default')}
           {buttons}
         </div>
-      </div>
+      </Container>
     );
   }
 
